@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Morning Activity – ภาควิชาศัลยศาสตร์</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&family=Prompt:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<style>
+/* ============================================================
+   BASE RESET & VARIABLES
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #003580;
+  --navy-dark: #001f4d;
+  --navy-mid: #004a99;
+  --accent: #e8a020;
+  --accent-light: #fef3e0;
+  --bg: #f0f4f8;
+  --white: #ffffff;
+  --text: #1a2535;
+  --muted: #6b7c93;
+  --border: #dde4ee;
+}
+body {
+  font-family: 'Sarabun', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+  background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 60%, #005bb5 100%);
+  color: white;
+  padding: 44px 0 32px;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -80px;
+  width: 300px; height: 300px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 50%;
+}
+.header::after {
+  content: '';
+  position: absolute;
+  bottom: -40px; left: 10%;
+  width: 200px; height: 200px;
+  background: rgba(232,160,32,0.08);
+  border-radius: 50%;
+}
+.header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  position: relative;
+  z-index: 1;
+}
+.header-top { text-align: center; margin-bottom: 28px; }
+.header-badge {
+  display: inline-block;
+  background: rgba(232,160,32,0.2);
+  border: 1px solid rgba(232,160,32,0.4);
+  color: var(--accent);
+  font-family: 'Prompt', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 5px 16px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+.header h1 {
+  font-family: 'Prompt', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.header-sub {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.65);
+}
+/* ============================================================
+   FILTER BAR
+   ============================================================ */
+.filter-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+.filter-btn {
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.08);
+  font-family: 'Sarabun', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: rgba(255,255,255,0.75);
+}
+.filter-btn.active, .filter-btn:hover {
+  background: white;
+  color: var(--navy-dark);
+  border-color: white;
+}
+/* ============================================================
+   MAIN LAYOUT
+   ============================================================ */
+.main {
+  max-width: 1100px;
+  margin: 32px auto 60px;
+  padding: 0 24px;
+}
+.search-wrap { margin-bottom: 28px; }
+.search-input {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 18px;
+  font-family: 'Sarabun', sans-serif;
+  font-size: 1rem;
+  color: var(--text);
+  outline: none;
+  background: white;
+  box-shadow: 0 2px 10px rgba(0,53,128,0.06);
+  transition: border-color 0.2s;
+}
+.search-input:focus { border-color: var(--navy-mid); }
+/* ============================================================
+   SECTION LABEL
+   ============================================================ */
+.section-label {
+  font-family: 'Prompt', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--navy-dark);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-label .count {
+  background: var(--navy-mid);
+  color: white;
+  font-size: 0.8rem;
+  padding: 2px 10px;
+  border-radius: 10px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+/* ============================================================
+   GRID & CARDS
+   ============================================================ */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 22px;
+}
+.card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,53,128,0.07);
+  overflow: hidden;
+  transition: transform 0.25s, box-shadow 0.25s;
+  display: flex;
+  flex-direction: column;
+  animation: fadeUp 0.5s ease both;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 28px rgba(0,53,128,0.13);
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.card:nth-child(1){animation-delay:0.05s}
+.card:nth-child(2){animation-delay:0.10s}
+.card:nth-child(3){animation-delay:0.15s}
+.card:nth-child(4){animation-delay:0.20s}
+.card:nth-child(5){animation-delay:0.25s}
+.card:nth-child(6){animation-delay:0.30s}
+.card:nth-child(7){animation-delay:0.35s}
+/* Card stripe colours */
+.card-stripe { height: 5px; }
+.stripe-mandatory  { background: linear-gradient(90deg, #0047ab, #0078d7); }
+.stripe-integrated { background: linear-gradient(90deg, #1a7a4a, #34c678); }
+.stripe-interesting{ background: linear-gradient(90deg, #c07800, #f5c842); }
+.stripe-service    { background: linear-gradient(90deg, #7b2d8b, #c261d4); }
+.stripe-trauma     { background: linear-gradient(90deg, #b01e28, #e05260); }
+.stripe-mmc        { background: linear-gradient(90deg, #2d5a8b, #5b93c7); }
+/* Card body */
+.card-body { padding: 20px 22px; flex: 1; }
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.session-num {
+  font-family: 'Prompt', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: var(--bg);
+  color: var(--muted);
+  padding: 3px 10px;
+  border-radius: 8px;
+}
+.date-badge {
+  font-size: 0.78rem;
+  background: var(--bg);
+  color: var(--muted);
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+/* ── VIEW BADGE (แก้ไข: element เดียว ไอคอน + ตัวเลขอยู่ใน span เดียวกัน) ── */
+.view-badge {
+  font-size: 0.82rem;
+  color: var(--navy-mid);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  background: #eef3ff;
+  padding: 3px 9px;
+  border-radius: 8px;
+  min-width: 60px;
+  transition: background 0.3s, color 0.3s;
+}
+.view-badge.loading {
+  color: var(--muted);
+  background: #f1f5f9;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+.view-badge.bumped { background: #dbeafe; color: #1d4ed8; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+/* Type tags */
+.type-tag {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.tag-mandatory  { color: #0047ab; }
+.tag-integrated { color: #1a7a4a; }
+.tag-interesting{ color: #c07800; }
+.tag-service    { color: #7b2d8b; }
+.tag-trauma     { color: #b01e28; }
+.tag-mmc        { color: #2d5a8b; }
+/* Card title & topics */
+.card-title {
+  font-family: 'Prompt', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--navy-dark);
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+.topic-list { list-style: none; padding: 0; margin-bottom: 14px; }
+.topic-list li {
+  font-size: 0.9rem;
+  color: var(--navy-dark);
+  font-weight: 500;
+  padding: 4px 0 4px 14px;
+  border-left: 3px solid var(--border);
+  margin-bottom: 6px;
+  line-height: 1.45;
+}
+/* Presenter block */
+.presenter-block {
+  background: #f6f9ff;
+  border-radius: 10px;
+  padding: 11px 14px;
+}
+.presenter-label { font-size: 0.75rem; color: var(--muted); margin-bottom: 4px; }
+.presenter-names { font-size: 0.9rem; font-weight: 600; color: var(--text); line-height: 1.5; }
+/* Card footer / button */
+.card-footer {
+  padding: 13px 22px;
+  border-top: 1px solid var(--border);
+}
+.btn-detail {
+  width: 100%;
+  padding: 9px;
+  border-radius: 10px;
+  border: 1.5px solid var(--navy-mid);
+  background: white;
+  color: var(--navy-mid);
+  font-family: 'Sarabun', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-detail:hover { background: var(--navy-mid); color: white; }
+/* Empty state */
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+  font-size: 1rem;
+  display: none;
+}
+/* Status bar */
+.status-bar {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 24px;
+  letter-spacing: 0.3px;
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<div class="header">
+  <div class="header-inner">
+    <div class="header-top">
+      <div class="header-badge">ภาควิชาศัลยศาสตร์</div>
+      <h1>Morning Activity</h1>
+      <p class="header-sub">Conference and Lecture</p>
+    </div>
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="setFilter('all', this)">ทั้งหมด</button>
+      <button class="filter-btn" onclick="setFilter('Mandatory', this)">Mandatory</button>
+      <button class="filter-btn" onclick="setFilter('Integrated', this)">Integrated</button>
+      <button class="filter-btn" onclick="setFilter('Interesting', this)">Interesting</button>
+      <button class="filter-btn" onclick="setFilter('Service', this)">Service</button>
+      <button class="filter-btn" onclick="setFilter('Trauma', this)">Trauma</button>
+      <button class="filter-btn" onclick="setFilter('MMC', this)">MMC</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MAIN CONTENT
+     ============================================================ -->
+<div class="main">
+  <div class="search-wrap">
+    <input class="search-input" type="text"
+           placeholder="🔍 ค้นหาหัวข้อ ผู้บรรยาย หรือวันที่..."
+           oninput="applyFilters()">
+  </div>
+
+  <div class="section-label">
+    <span id="category-text">รายการกิจกรรมทั้งหมด</span>
+    <span class="count" id="count-label">7 กิจกรรม</span>
+  </div>
+
+  <div class="grid" id="grid">
+
+    <!-- ── ครั้งที่ 1 ── -->
+    <div class="card" data-type="Mandatory"
+         data-search="ใบ pre op lab ณัฐสิริ กิตติถิระพงษ์ 2 กรกฎาคม 2568">
+      <div class="card-stripe stripe-mandatory">&nbsp;</div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="session-num">ครั้งที่ 1</span>
+          <span class="type-tag tag-mandatory">Mandatory</span>
+          <!-- ✅ แก้ไข: view-badge เดียว มี id="vb_act_01" ครอบทั้งไอคอนและตัวเลข -->
+          <span class="view-badge loading" id="vb_act_01">
+            <i class="bi bi-eye-fill"></i>&nbsp;<span class="vcount">…</span>
+          </span>
+          <span class="date-badge">2 ก.ค. 68 (พุธ)</span>
+        </div>
+        <div class="card-title">"ใบ Pre op Lab"</div>
+        <div class="presenter-block">
+          <div class="presenter-label">ผู้บรรยาย</div>
+          <div class="presenter-names">ผศ.พญ.ณัฐสิริ กิตติถิระพงษ์</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="btn-detail"
+          onclick="clickCountView('act_01','https://elearning.ra.mahidol.ac.th/graded/mod/hvp/view.php?id=3566')">
+          🎥 ชมการบรรยายย้อนหลัง
+        </button>
+      </div>
+    </div>
+
+    <!-- ── ครั้งที่ 2 ── -->
+    <div class="card" data-type="Mandatory"
+         data-search="tools electronic health record ehr ผ่องพรรณ สุขเพียบพร้อม พรรณผกา รัตนวรรณี สารสนเทศ 17 ตุลาคม 2568">
+      <div class="card-stripe stripe-mandatory">&nbsp;</div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="session-num">ครั้งที่ 2</span>
+          <span class="type-tag tag-mandatory">Mandatory</span>
+          <span class="view-badge loading" id="vb_act_02">
+            <i class="bi bi-eye-fill"></i>&nbsp;<span class="vcount">…</span>
+          </span>
+          <span class="date-badge">17 ต.ค. 68 (ศุกร์)</span>
+        </div>
+        <div class="card-title">"Tools in Electronic Health Record (EHR)"</div>
+        <div class="presenter-block">
+          <div class="presenter-label">ผู้บรรยาย</div>
+          <div class="presenter-names">
+            คุณผ่องพรรณ สุขเพียบพร้อม<br>
+            คุณพรรณผกา รัตนวรรณี<br>
+            <span style="color:var(--muted);"><span style="font-size:0.8rem;">ทีมสารสนเทศ</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="btn-detail"
+          onclick="clickCountView('act_02','https://elearning.ra.mahidol.ac.th/graded/mod/hvp/view.php?id=3757')">
+          🎥 ชมการบรรยายย้อนหลัง
+        </button>
+      </div>
+    </div>
+
+    <!-- ── ครั้งที่ 3 ── -->
+    <div class="card" data-type="Mandatory"
+         data-search="การจองเลือดเตรียมการผ่าตัดอย่างเหมาะสม พิมพรรณ กิจพ่อค้า 7 มกราคม 2569">
+      <div class="card-stripe stripe-mandatory">&nbsp;</div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="session-num">ครั้งที่ 3</span>
+          <span class="type-tag tag-mandatory">Mandatory</span>
+          <span class="view-badge loading" id="vb_act_03">
+            <i class="bi bi-eye-fill"></i>&nbsp;<span class="vcount">…</span>
+          </span>
+          <span class="date-badge">7 ม.ค. 69 (พุธ)</span>
+        </div>
+        <div class="card-title">"การจองเลือดเตรียมการผ่าตัดอย่างเหมาะสม"</div>
+        <div class="presenter-block">
+          <div class="presenter-label">ผู้บรรยาย</div>
+          <div class="presenter-names">รศ.พญ.พิมพรรณ กิจพ่อค้า</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="btn-detail"
+          onclick="clickCountView('act_03','https://elearning.ra.mahidol.ac.th/graded/mod/hvp/view.php?id=4149')">
+          🎥 ชมการบรรยายย้อนหลัง
+        </button>
+      </div>
+    </div>
+
+    <!-- ── ครั้งที่ 4 ── -->
+    <div class="card" data-type="Mandatory"
+         data-search="safety culture ยุวเรศมคฐ์ สิทธิชาญบัญชา 20 กุมภาพันธ์ 2569">
+      <div class="card-stripe stripe-mandatory">&nbsp;</div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="session-num">ครั้งที่ 4</span>
+          <span class="type-tag tag-mandatory">Mandatory</span>
+          <span class="view-badge loading" id="vb_act_04">
+            <i class="bi bi-eye-fill"></i>&nbsp;<span class="vcount">…</span>
+          </span>
+          <span class="date-badge">20 ก.พ. 69 (ศุกร์)</span>
+        </div>
+        <div class="card-title">"Safety Culture"</div>
+        <div class="presenter-block">
+          <div class="presenter-label">ผู้บรรยาย</div>
+          <div class="presenter-names">ศ.พญ.ยุวเรศมคฐ์ สิทธิชาญบัญชา</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="btn-detail"
+          onclick="clickCountView('act_04','https://elearning.ra.mahidol.ac.th/graded/mod/hvp/view.php?id=4543')">
+          🎥 ชมการบรรยายย้อนหลัง
+        </button>
+      </div>
+    </div>
+
+    <!-- ── ครั้งที่ 5 ── -->
+    <div class="card" data-type="Mandatory"
+         data-search="feedback ระบบบริการ preoperation care center ชื่นชมคนทำดี สื่อสาร ประชาสัมพันธ์ ehr ณัฐสิริ กิตติถิระพงษ์ สารสนเทศ รามาธิบดี 20 มีนาคม 2569">
+      <div class="card-stripe stripe-mandatory">&nbsp;</div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="session-num">ครั้งที่ 5</span>
+          <span class="type-tag tag-mandatory">Mandatory</span>
+          <span class="view-badge loading" id="vb_act_05">
+            <i class="bi bi-eye-fill"></i>&nbsp;<span class="vcount">…</span>
+          </span>
+          <span class="date-badge">20 มี.ค. 69 (ศุกร์)</span>
+        </div>
+        <ul class="topic-list">
+          <li>Feedback ระบบบริการและสุขภาพ ภาควิชาศัลยศาสตร์</li>
+          <li>Preoperation Care Center</li>
+          <li>ชื่นชมคนทำดี</li>
+          <li>สื่อสาร &amp; ประชาสัมพันธ์ EHR
+            <span style="color:var(--muted);"><span style="font-size:0.8rem;">(ทีมสารสนเทศ รพ.รามาธิบดี)</span></span>
+          </li>
+        </ul>
+        <div class="presenter-block">
+          <div class="presenter-label">ผู้บรรยาย</div>
+          <div class="presenter-names">ผศ.พญ.ณัฐสิริ กิตติถิระพงษ์</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="btn-detail"
+          onclick="clickCountView('act_05','https://elearning.ra.mahidol.ac.th/graded/mod/hvp/view.php?id=4544')">
+          🎥 ชมการบรรยายย้อนหลัง
+        </button>
+      </div>
+    </div>
+
+    <!-- ── ครั้งที่ 6 ── -->
+    <div class="card" data-type="Mandatory"
+         data-search="vte prophylaxis flow diagnosis consultation ณัฐสิริ กิตติถิระพงษ์ กนกลดา ศรีเกื้อ 17 เมษายน 2569">
+      <div class="card-stripe stripe-mandatory">&nbsp;</div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="session-num">ครั้งที่ 6</span>
+          <span class="type-tag tag-mandatory">Mandatory</span>
+          <span class="view-badge loading" id="vb_act_06">
+            <i class="bi bi-eye-fill"></i>&nbsp;<span class="vcount">…</span>
+          </span>
+          <span class="date-badge">17 เม.ย. 69 (ศุกร์)</span>
+        </div>
+        <div class="card-title">"VTE Prophylaxis Flow for Diagnosis and Consultation"</div>
+        <div class="presenter-block">
+          <div class="presenter-label">ผู้บรรยาย</div>
+          <div class="presenter-names">
+            ผศ.พญ.ณัฐสิริ กิตติถิระพงษ์<br>
+            อ.พญ.กนกลดา ศรีเกื้อ
+          </div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="btn-detail"
+          onclick="clickCountView('act_06','https://elearning.ra.mahidol.ac.th/graded/mod/hvp/view.php?id=4545')">
+          🎥 ชมการบรรยายย้อนหลัง
+        </button>
+      </div>
+    </div>
+
+    <!-- ── ครั้งที่ 7 ── -->
+    <div class="card" data-type="Mandatory"
+         data-search="pain management ลิษา สังฆ์คุ้ม 15 พฤษภาคม 2569">
+      <div class="card-stripe stripe-mandatory">&nbsp;</div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="session-num">ครั้งที่ 7</span>
+          <span class="type-tag tag-mandatory">Mandatory</span>
+          <span class="view-badge loading" id="vb_act_07">
+            <i class="bi bi-eye-fill"></i>&nbsp;<span class="vcount">…</span>
+          </span>
+          <span class="date-badge">15 พ.ค. 69 (ศุกร์)</span>
+        </div>
+        <div class="card-title">"Pain management"</div>
+        <div class="presenter-block">
+          <div class="presenter-label">ผู้บรรยาย</div>
+          <div class="presenter-names">รศ.พญ.ลิษา สังฆ์คุ้ม</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="btn-detail"
+          onclick="clickCountView('act_07','https://elearning.ra.mahidol.ac.th/graded/mod/hvp/view.php?id=3566')">
+          🎥 ชมการบรรยายย้อนหลัง
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /grid -->
+
+  <div class="empty" id="empty-state">ไม่พบกิจกรรมที่ตรงกับการค้นหา</div>
+  <div class="status-bar" id="status-bar">กำลังโหลดยอดผู้ชม…</div>
+
+</div><!-- /main -->
+
+
+<!-- ============================================================
+     🔧 SUPABASE VIEW COUNTER SCRIPT
+     ============================================================
+     วางไว้ท้าย <body> เหมือนระบบ HTML แบบฝัง script
+
+     ❗ สิ่งที่ต้องแก้ไข 2 จุดก่อนใช้งาน:
+        1. SUPA_URL  → Project URL จาก Supabase > Settings > API
+        2. SUPA_KEY  → anon public key (ขึ้นต้นด้วย eyJ...)
+                       ❌ อย่าใช้ sb_publishable_... (ไม่ใช่ JWT)
+
+     ❓ วิธีดู anon key ที่ถูกต้อง:
+        Supabase Dashboard → Project Settings → API
+        → ส่วน "Project API keys" → คัดลอก "anon public"
+
+     📋 SQL ที่ต้องรันใน Supabase SQL Editor (ครั้งแรกครั้งเดียว):
+     ─────────────────────────────────────────────────────────────
+     CREATE TABLE IF NOT EXISTS views (
+       id         TEXT PRIMARY KEY,
+       count      BIGINT DEFAULT 0,
+       updated_at TIMESTAMPTZ DEFAULT NOW()
+     );
+     INSERT INTO views (id, count) VALUES
+       ('act_01',0),('act_02',0),('act_03',0),
+       ('act_04',0),('act_05',0),('act_06',0),('act_07',0)
+     ON CONFLICT (id) DO NOTHING;
+
+     CREATE OR REPLACE FUNCTION increment_view(row_id TEXT)
+     RETURNS VOID AS $$
+       UPDATE views SET count=count+1, updated_at=NOW() WHERE id=row_id;
+     $$ LANGUAGE sql SECURITY DEFINER;
+
+     ALTER TABLE views ENABLE ROW LEVEL SECURITY;
+     CREATE POLICY "allow public read" ON views FOR SELECT USING (true);
+     GRANT EXECUTE ON FUNCTION increment_view(TEXT) TO anon;
+     ─────────────────────────────────────────────────────────────
+     ============================================================ -->
+<script>
+/* ══════════════════════════════════════════════════════════════
+   ⚙️  ตั้งค่าตรงนี้เท่านั้น — แก้ 2 บรรทัดด้านล่าง
+   ══════════════════════════════════════════════════════════════ */
+const SUPA_URL = 'https://cjkiavzgwnkujinxveru.supabase.co';
+/* ❗ เปลี่ยน key ด้านล่างเป็น anon public key จริง (eyJ...) จาก Supabase Settings > API */
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqa2lhdnpnd25rdWppbnh2ZXJ1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2NDEzODQsImV4cCI6MjA5NzIxNzM4NH0.Y91InSrlTNu3iK5zvT8bEeEv_iy-9y0d2N6P7gsCEdM';
+/* ══════════════════════════════════════════════════════════════ */
+
+const ACTS = ['act_01','act_02','act_03','act_04','act_05','act_06','act_07'];
+
+/**
+ * อัปเดตตัวเลขและสถานะ badge ของแต่ละ activity
+ * @param {string} id   - เช่น 'act_01'
+ * @param {number} n    - ยอดวิวที่จะแสดง
+ * @param {boolean} bump - เปิด/ปิด animation เมื่อกด
+ */
+function updateBadge(id, n, bump = false) {
+  const badge = document.getElementById('vb_' + id);
+  if (!badge) return;
+  /* เขียนตัวเลขลงใน .vcount ที่อยู่ภายใน badge */
+  const countSpan = badge.querySelector('.vcount');
+  if (countSpan) countSpan.textContent = Number(n).toLocaleString();
+  badge.classList.remove('loading');
+  if (bump) {
+    badge.classList.add('bumped');
+    setTimeout(() => badge.classList.remove('bumped'), 1400);
+  }
+}
+
+/* โหลดยอดวิวทุก topic พร้อมกันตอนเปิดหน้า */
+async function loadViewCounts() {
+  try {
+    const res = await fetch(
+      `${SUPA_URL}/rest/v1/views?select=id,count&order=id`,
+      { headers: { 'apikey': SUPA_KEY, 'Authorization': `Bearer ${SUPA_KEY}` } }
+    );
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const rows = await res.json();
+    rows.forEach(row => updateBadge(row.id, row.count));
+    const bar = document.getElementById('status-bar');
+    if (bar) bar.textContent = 'ยอดผู้ชมอัปเดตแบบ real-time';
+  } catch (e) {
+    console.warn('loadViewCounts error:', e);
+    /* แสดง – และข้อความแจ้งเตือนเมื่อโหลดไม่ได้ */
+    ACTS.forEach(id => {
+      const badge = document.getElementById('vb_' + id);
+      if (!badge) return;
+      const countSpan = badge.querySelector('.vcount');
+      if (countSpan) countSpan.textContent = '–';
+      badge.classList.remove('loading');
+    });
+    const bar = document.getElementById('status-bar');
+    if (bar) bar.textContent = '⚠️ โหลดยอดผู้ชมไม่ได้ — ตรวจสอบ SUPA_URL และ SUPA_KEY (ต้องเป็น eyJ...)';
+  }
+}
+
+/* เพิ่มยอดวิว 1 ครั้งแล้วเปิดลิงก์วิดีโอใน tab ใหม่ */
+async function clickCountView(actId, url) {
+  /* Optimistic update — แสดงทันทีก่อน request เสร็จ */
+  const badge = document.getElementById('vb_' + actId);
+  const countSpan = badge ? badge.querySelector('.vcount') : null;
+  const prev = parseInt((countSpan ? countSpan.textContent : '0').replace(/,/g, '')) || 0;
+  updateBadge(actId, prev + 1, true);
+
+  /* บันทึกลง Supabase ผ่าน RPC function */
+  try {
+    const res = await fetch(`${SUPA_URL}/rest/v1/rpc/increment_view`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': `Bearer ${SUPA_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ row_id: actId })
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  } catch (e) {
+    console.warn('increment_view error:', e);
+    /* Rollback ถ้า request ล้มเหลว */
+    updateBadge(actId, prev);
+  }
+
+  /* เปิดลิงก์วิดีโอ */
+  window.open(url, '_blank');
+}
+
+/* ── Filter & Search ── */
+let currentFilter = 'all';
+
+function setFilter(type, btn) {
+  currentFilter = type;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function applyFilters() {
+  const q = document.querySelector('.search-input').value.toLowerCase();
+  const cards = document.querySelectorAll('.card');
+  let visible = 0;
+  cards.forEach(card => {
+    const matchType = currentFilter === 'all' || card.dataset.type === currentFilter;
+    const searchText = (card.dataset.search + ' ' + card.innerText).toLowerCase();
+    const matchText  = !q || searchText.includes(q);
+    const show = matchType && matchText;
+    card.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  const textLabel  = document.getElementById('category-text');
+  const countLabel = document.getElementById('count-label');
+  if (textLabel)  textLabel.textContent  = currentFilter === 'all' ? 'รายการกิจกรรมทั้งหมด' : `หมวดหมู่ ${currentFilter}`;
+  if (countLabel) countLabel.textContent = `${visible} กิจกรรม`;
+  document.getElementById('empty-state').style.display = visible === 0 ? 'block' : 'none';
+}
+
+/* โหลดทันทีที่หน้าพร้อม */
+window.addEventListener('load', loadViewCounts);
+</script>
+</body>
+</html>
